@@ -1,0 +1,23 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+    "key": "ctrl+f",
+    "command": "cursorRight",
+    "when": "vim.mode == 'Insert'"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "cursorLeft",
+    "when": "vim.mode == 'Insert'"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "workbench.action.toggleSidebarVisibility",
+    "when": "editorTextFocus && vim.mode == 'Normal'"
+  },
+  {
+    "key": "ctrl+j",
+    "command": "workbench.action.togglePanel",
+    "when": "editorTextFocus && vim.mode == 'Normal'" 
+  }
+]
