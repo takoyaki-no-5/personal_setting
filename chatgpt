@@ -24,7 +24,9 @@
     // MutationObserverで1回だけ監視する設定
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
+            observer.disconnect();       
             setCustomTitle();
+            observer.observe(document.querySelector('title'), { childList: true });
         });
     });
 
@@ -33,9 +35,4 @@
 
     // 初回にタイトルを設定
     setCustomTitle();
-
-    // 一定時間後にMutationObserverを停止（無限ループ防止）
-    setTimeout(() => {
-        observer.disconnect();
-    }, 5000); // 5秒後に監視を停止
 })();
