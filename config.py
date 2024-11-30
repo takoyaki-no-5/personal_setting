@@ -30,8 +30,9 @@ define_keymap(None, {
 	K("M-b"): with_mark(K("C-left")), 
 	K("M-f"): with_mark(K("C-right")),
 	K("C-e"): with_mark(K("end")),
-        K("RSuper-semicolon"): K("volumedown"),
-        K("RSuper-apostrophe"): K("volumeup"),
+    K("RSuper-semicolon"): K("volumedown"),
+    K("RSuper-apostrophe"): K("volumeup"),
+    K("RSuper-m"): K("mute"),
 }, "Custom Keymap for Ctrl+H and CapsLock swap")
 
 define_keymap(lambda wm_class:wm_class == "Google-chrome",{
