@@ -1,0 +1,128 @@
+#!/bin/bash
+
+path="/home/kama/bin/"
+TXTpath="${path}/key_shortcut.txt"
+WIN1="Notion"
+WIN2="Chat GPT"
+WIN3="Google Chrome"
+WIN4="Visual Stugio Code"
+WIN5="端末"
+TASKBAR="xfce4-panel"
+DESKTOP="デスクトップ"
+
+function usage {
+# コマンドの使用方法
+#basenameはpathからファイル名だけを抽出､$0は実行スクリプトの名前
+
+	cat <<EOM
+Usage: $(basename "$0") [OPTION]...  
+
+	-l		左半分にウィンドウを表示
+	-r		右半分にウィンドウを表示
+	-a NUM	指定したウィンドウをアクティブにする
+	-e		win1〜5以外のウィンドウを切り替える
+	-c		ウィンドウ削除
+	-f		フルスクリーンにする
+	-m		マウスを右下にどかす
+
+EOM
+
+	exit 2
+}
+
+function win_active {
+	case "${OPTARG}" in
+		1)
+			wmctrl -a ${WIN1}
+			;;
+		2)
+			wmctrl -a ${WIN2}
+			;;
+		3)
+			wmctrl -a ${WIN3}
+			;;
+		4)
+			wmctrl -a ${WIN4}
+			;;
+		5)
+			wmctrl -a ${WIN5}
+			;;
+		*)
+			echo "Error: オプションが間違っています｡1〜5を指定してください"
+			;;
+	esac
+}
+
+function active_and_echo {
+	wmctrl -i -r ${priorWindow} -b add,below
+	wmctrl -i -r $1 -b remove,below
+	wmctrl -i -a $1
+	echo $1 > "${TXTpath}"
+}
+
+function extra_window {
+
+	priorWindow=$(cat "${TXTpath}") 	
+	activewindow=$(xdotool getactivewindow)
+	sinsuu10=$(printf "0x%08x" $activewindow)
+	i=0
+
+	# win1〜5以外のウィンドウを配列として受け取る
+	readarray -t lines < <(wmctrl -l | grep -v -E "${WIN1}|${WIN2}|${WIN3}|${WIN4}|${WIN5}|${TASKBAR}|${DESKTOP}" | awk '{print $1}')
+
+	length=${#lines[@]}
+
+	# 現在のウィンドウがwin6だった場合､次のwin6ウィンドウに変える
+	for line in "${lines[@]}"; do
+		if [ "${line}" = "${sinsuu10}" ];then
+			if [ ${i} -eq $(($length-1)) ]; then
+				active_and_echo ${lines[0]}
+				exit
+			fi 
+			active_and_echo ${lines[$(($i+1))]}
+			exit
+		fi
+		i=$(($i+1))
+	done
+
+	# 前のwin6ウィンドウを探してあったらアクティブにする
+	for line in "${lines[@]}"; do
+		if [ "${line}" = "${priorWindow}" ];then
+			active_and_echo ${priorWindow} 
+			exit
+		fi
+	done
+
+	active_and_echo ${lines[0]}
+}
+
+while getopts ":lra:ecfmh" optKey; do
+	case "$optKey" in
+		l)
+			wmctrl -r :ACTIVE: -b remove,fullscreen
+			wmctrl -r :ACTIVE: -e 0,0,0,800,-1
+			;;
+		r)
+			wmctrl -r :ACTIVE: -b remove,fullscreen
+			wmctrl -r :ACTIVE: -e 0,800,0,800,-1
+			;;
+		a)
+			win_active
+			;;
+		e)
+			extra_window
+			;;
+		c)
+			wmctrl -c :ACTIVE:
+			;;
+		f)
+			wmctrl -r :ACTIVE: -b toggle,fullscreen
+			;;
+		m)
+			xdotool mousemove_relative 50 50
+			;;
+		h|*)
+			usage
+			;;
+	esac
+done
