@@ -2,10 +2,10 @@
 
 path="/home/kama/bin/"
 TXTpath="${path}/key_shortcut.txt"
-WIN1="Notion"
+WIN1="Obsidian Vault"
 WIN2="Chat GPT"
 WIN3="Google Chrome"
-WIN4="Visual Stugio Code"
+WIN4="Code"
 WIN5="端末"
 TASKBAR="xfce4-panel"
 DESKTOP="デスクトップ"
@@ -42,7 +42,7 @@ function win_active {
 			wmctrl -a ${WIN3}
 			;;
 		4)
-			wmctrl -a ${WIN4}
+			wmctrl -x -a ${WIN4}
 			;;
 		5)
 			wmctrl -a ${WIN5}
