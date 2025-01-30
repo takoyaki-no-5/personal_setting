@@ -2,47 +2,39 @@ import re
 from xkeysnail.transform import *
 
 define_modmap({
-	Key.KATAKANAHIRAGANA:Key.CAPSLOCK,
-	Key.CAPSLOCK:Key.ESC,
-	Key.YEN:Key.EQUAL,
-	Key.EQUAL:Key.YEN,
-	Key.LEFT_SHIFT:Key.RO,	
 })
 
 define_multipurpose_modmap({
-    Key.SPACE:[Key.SPACE,Key.LEFT_CTRL],
-    Key.MUHENKAN:[Key.MUHENKAN,Key.LEFT_SHIFT],
-    Key.HENKAN:[Key.ENTER,Key.RIGHT_META]
 })
 
 define_keymap(None, {
-	K("C-f"): K("backspace"),          
-	K("C-Shift-f"):K("backspace"),
-	K("C-d"):K("delete"),
-	K("C-l"): Key.RIGHT,       
-	K("C-h"): Key.LEFT,         
-	K("C-k"): Key.UP,           
-	K("C-j"): Key.DOWN,         
-	K("C-Shift-l"): K("Shift-right"),
-	K("C-Shift-h"): K("Shift-left"),
-	K("C-Shift-k"): K("Shift-up"),
-	K("C-Shift-j"): K("Shift-down"),
-	K("M-b"): with_mark(K("C-left")), 
-	K("M-f"): with_mark(K("C-right")),
-	K("C-e"): with_mark(K("end")),
-   	K("RSuper-semicolon"): K("volumedown"),
-    	K("RSuper-apostrophe"): K("volumeup"),
-    	K("RSuper-m"): K("mute"),
-   	K("RSuper-h"): K("C-Shift-tab"),
-   	K("RSuper-l"): K("C-tab"),
-}, "Custom Keymap for Ctrl+H and CapsLock swap")
+    K("C-Shift-backspace"): [ K("C-end") ],
+    K("C-o"): [ K("end"),K("Shift-Enter") ],
+	K("C-Shift-o"): [ K("home"),K("Shift-Enter"),Key.UP ],
+	K("RSuper-semicolon"): K("volumedown"),
+	K("RSuper-apostrophe"): K("volumeup"),
+	K("RSuper-m"): K("mute"),
+}, "Custom Keymap")
 
 define_keymap(lambda wm_class:wm_class == "Google-chrome",{
 	K("C-s"):K("C-l"),
-	K("C-p"):K("C-w"),
-	K("C-y"):K("Shift-f10"),
 },"Chrome only")
+
+define_keymap(lambda wm_class:wm_class == "Code",{
+    K("LM-h"):K("C-PAGE_UP"),
+    K("LM-l"):K("C-PAGE_DOWN"),
+},"Code Only")
+
+define_keymap(lambda wm_class:wm_class != "Code",{
+    K("LM-h"): K("C-Shift-tab"),
+    K("LM-l"): K("C-tab"),
+},"except code")
 
 define_keymap(lambda wm_class:wm_class == "Xfce4-terminal",{
 	K("C-s"):K("C-l"),
+    K("C-backspace"):K("C-w"), # デフォルトの単語削除の設定を利用する
+    K("C-w"):K("C-backspace"), # C-backspaceでタブ削除されるように設定する
 },"terminal only")
+
+define_keymap(lambda wm_class:wm_class != "Xfce4-terminal",{
+},"excpt terminal")
