@@ -1,0 +1,6 @@
+set clipboard=unnamed
+
+" ビジュアルモードでインデントした後もビジュアルモードを維持する設定
+vnoremap < <gv
+vnoremap > >gv
+
