@@ -1,10 +1,14 @@
 {
     "vim.useSystemClipboard": true,
-    "vim.insertModeKeyBindings": [
-        {
-            "before": ["j","j"],
-            "after" : ["<Esc>"]
-        }
-    ],
-    "vim.hlsearch":true
+    "vim.hlsearch": true,
+    "python.defaultInterpreterPath": "C:\\Users\\kamag\\anaconda3\\python.exe",
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "workbench.iconTheme": "material-icon-theme",
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "editor.accessibilitySupport": "off",
+    "files.autoSave": "afterDelay",
+    /*tensorflowを使うとkerasの補完が効かなくなっていたので、こちらを使用*/
+    "python.analysis.extraPaths": [
+        "C:\\Users\\XXX\\anaconda3\\envs\\tf\\Lib\\site-packages"
+    ]
 }

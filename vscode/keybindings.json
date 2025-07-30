@@ -25,5 +25,11 @@
     "command": "workbench.action.terminal.sendSequence",
     "args": { "text": "\u0010" }, // Ctrl + P に対応するシーケンス
     "when": "terminalFocus"
+  },
+  {
+    "key": "ctrl+w",
+    "command": "workbench.action.closeActiveEditor",
+    "when": "editorTextFocus"
   }
+
 ]

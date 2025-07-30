@@ -2,62 +2,128 @@
 
 ;修飾キーと同時に押されているときにSendするとその修飾キーと一緒に送られたことになってしまうので修飾キーを一時的に押されていないことにする
 ModifierdKey(sendkey){
-    sendStr := sendKey
     if(GetKeyState("Shift")){
-        sendStr := "{Shift Up}" . sendStr . "{Shift Down}"
+        sendKey := "{Shift Up}" . sendKey . "{Shift Down}"
     }
     if(GetKeyState("Ctrl")){
-       sendStr := "{Ctrl up}" . sendStr . "{Ctrl down}"
+        sendKey := "{Ctrl up}" . sendKey . "{Ctrl down}"
     }
     if(GetKeyState("LWin")){
-        sendStr := "{Ctrl down}{Ctrl up}{LWin up}" . sendStr . "{LWin down}"
+        sendKey := "{Ctrl down}{Ctrl up}{LWin up}" . sendKey . "{LWin down}"
     }
-    SendInput(sendStr)
+    SendInput(sendKey)
 }
 
-timeout:= 300
-pressedAt:= 0
-
+is_send:=false
 ;単押しの場合の挙動を持たせる
-SinglePress(lastkey,sendkey,is_prior_empty:=false) {
+SinglePress(lastkey,sendkey,modifier_and_modifier_remap,is_prior_empty:=false) {
+    global is_send
+    static pressedAt
+    static timeout:=300
+
+    is_send:=true
     pressedAt:=A_TickCount
+
     KeyWait lastkey
     if(A_TickCount - pressedAt > timeout){
         return
     }
 
-    if (!is_prior_empty && A_PriorKey==lastkey)
+    if ((!is_prior_empty && A_PriorKey==lastkey) || (is_prior_empty && A_PriorKey==''))
     {
-	    Send sendkey
-
-    }else if(is_prior_empty && A_PriorKey=='')
-    {
-	    Send sendkey
+        if(GetKeyState("sc038","P") && modifier_and_modifier_remap.Has("Shift")){
+            sendKey := "{Shift Up}" . modifier_and_modifier_remap["Shift"] . "{Shift Down}"
+        }else if(GetKeyState("sc079","P") && modifier_and_modifier_remap.Has("Ctrl")){
+            sendKey := "{Ctrl Up}" . modifier_and_modifier_remap["Ctrl"] . "{Ctrl down}"
+        }else if(GetKeyState("sc07B","P") && modifier_and_modifier_remap.Has("LWin")){
+            sendKey := "{Ctrl down}{Ctrl Up}{LWin up}" . modifier_and_modifier_remap["LWin"] . "{LWin down}"
+        }else if(GetKeyState("sc039","P") && modifier_and_modifier_remap.Has("LAlt")){
+            sendkey := "{LAlt Up}" . modifier_and_modifier_remap["LAlt"] . "{LAlt Down}"
+        }
+        if(is_send){
+            SendInput sendkey
+        }
     }
-    return
+    is_send:=false
 }
 
-WIN_ERROR_TXT1:="ウインドウ:"
+WIN_ERROR_TXT1:="ウィンドウ:"
 WIN_ERROR_TXT2:="が見つかりません`n`n文字列があってるか確認して下さい。`nenv.txtを変更したらその後起動しなおしてください。`n文字コードはutf-8でお願いします。`n`n`n※※※※※※※※※※※※※※`nこのエラーメッセージは`n`nウィンドウ:XXXが見つかりません`n`nの形式で送ってるので、`n`nウィンドウ:XXX`nが見つかりません`n`nとかだったら変な改行が入っちゃってるかも。`n※※※※※※※※※※※※※※"
 UNEXPECTED_ERROR:="未知のバグです。報告をお願いします。"
 
-WrapWinMoveActive(x,y,width,height,wintitle){
+WrapWinMoveActive(x,y,width,height,winarr){
     try{
-        WinMove x,y,width,height, wintitle
-        WinActivate wintitle
+        WinMove x,y,width,height, winarr[1]
+        WinActivate winarr[1]
     }catch TargetError as Terr{
-        MsgBox(WIN_ERROR_TXT1 . Terr.Extra . WIN_ERROR_TXT2)
+        Run(winarr[2],A_ScriptDir . "\起動用アプリケーションショートカット")
+        ;MsgBox(WIN_ERROR_TXT1 . Terr.Extra . WIN_ERROR_TXT2)
     }catch as err{
         MsgBox(UNEXPECTED_ERROR)
     }
 }
 
-WrapWinActive(wintitle){
+WrapWinActive(winarr,ThisHotkey){
     try{
-        WinActivate wintitle
-    }catch TargetError as Terr{
-        MsgBox(WIN_ERROR_TXT1 . Terr.Extra . WIN_ERROR_TXT2)
+        if(WinExist(winarr[1])){
+            GroupAdd winarr[3],winarr[1]
+            if(A_PriorHotkey!=ThisHotkey){
+                GroupActivate winarr[3],"R"
+            }else{
+                GroupActivate winarr[3]
+            }
+        }else{
+            Run(winarr[2],A_ScriptDir . "\起動用アプリケーションショートカット")
+            ;MsgBox(WIN_ERROR_TXT1 . Terr.Extra . WIN_ERROR_TXT2)
+        }
+    ;}catch TargetError as Terr{        
     }catch as err{
         MsgBox(UNEXPECTED_ERROR)
     }
+}
+
+priorWindow:=""
+ChangeWin6(ThisHotkey){
+    global priorWindow
+    try{
+        if(A_PriorHotkey!=ThisHotkey){
+            GroupDeactivate "MainWindows","R"
+        }else{
+            GroupDeactivate "MainWindows"
+        }
+
+        tempWindow:=WinGetTitle("A")
+        if(A_PriorHotkey==ThisHotkey and tempWindow != priorWindow){
+            WinMoveBottom(priorWindow)
+        }
+        priorWindow:=tempWindow
+    }catch as err{
+        ;MsgBox("このコマンドはまだ動作が不安定です。いつか良い感じにします。`n`n" . err.Message)
+    }
+}
+
+isSuspend:=false
+WrapSuspend(){
+    global isSuspend
+    Suspend
+    if(isSuspend){
+        MsgBox("AutoHotKeyを再開しました")
+    } 
+    else{
+        MsgBox("AutoHotKeyを一時停止しました`n再開するには右側のctrlキーを押してください")
+    }
+    isSuspend:=!isSuspend
+}
+
+WrapReload(){
+    MsgBox("AutoHotKeyをReloadします")
+    Sleep 1 ;これがないとメッセージが消えちゃう
+    Reload
+}
+
+RunAnotherHotkey(filename){
+    Run '*RunAs "C:\Users\kamag\Documents\programing\Autohotkey\amiti\' filename '"'
+    MsgBox(filename . "を起動します")
+    Sleep 1
+    ExitApp
 }
