@@ -6,7 +6,7 @@
 #Include Function.ahk
 #Include Common.ahk
 
-^+q::^5 ;何の目的で作ったのかわかんない
+;^+q::^5 ;何の目的で作ったのかわかんない
 ^+BackSpace::^End ;C-S-gでC-end
 
 ^o::{
@@ -78,18 +78,18 @@
 ^F10::RunAnotherHotkey('amiti.ahk')
 
 ^+s::#+s
-isJantamaMode:=false
+isMauseMode:=false
 ^F11::{
-    global isJantamaMode
-    isJantamaMode:=!isJantamaMode
-    if(isJantamaMode){
+    global isMauseMode
+    isMauseMode:=!isMauseMode
+    if(isMauseMode){
         MsgBox("片手マウスモードに入ります")
     }else{
         MsgBox("通常に戻ります")
     }
 }
 
-#HotIf isJantamaMode
+#HotIf isMauseMode
 j::{
     MouseClick "left",,,,,"D"
     SendInput "j"

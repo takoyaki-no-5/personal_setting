@@ -5,6 +5,25 @@
 #Include StartUp.ahk
 #Include Common.ahk
 
+; Ctrl + Alt + Enter でアクティブウィンドウをボーダーレス全画面 ⇄ 元に戻す
+^F7::
+{
+    winID := WinExist("A")
+    style := WinGetStyle(winID)
+
+    if (style & 0xC00000) {
+        ; タイトルバーと枠を削
+        WinSetStyle(style & ~0xC00000, winID)
+        ; 画面いっぱいに移動・サイズ変更
+        WinMove(0, 0, A_ScreenWidth, A_ScreenHeight, winID)
+    } else {
+        ; 枠を戻す
+        WinSetStyle(style | 0xC00000, winID)
+        WinRestore(winID)
+    }
+}
+
+
 ;非修飾キーのリマップ
 sc03A::Tab      ;capslockをtabに
 ;+sc03A::&      ;shift+capslockを&に shiftのリマップの場所に記述
@@ -15,6 +34,7 @@ Shift::sc073    ;shiftキーを\キーに
 sc027::- ; ;キーを-に
 /:::
 :::/
+
 
 #SuspendExempt
     RControl::WrapSuspend
@@ -105,7 +125,7 @@ Ctrl["LAlt"]:="6"
 ;winキーショートカット
 #sc03A::+/ ;Capslockで?
 #h::ModifierdKey("^+{tab}")   ;hでctrl+shift+tab
-#l::ModifierdKey("^{tab}")    ;lでctrl+tab
+#l::ModifierdKey("^{tab}")    ;でctrl+tab
 ;vscodeはこのコマンドでタブ移動するらしい
 #HotIf WinActive("ahk_exe Code.exe")
     #h::ModifierdKey("^{PgUp}")
@@ -170,6 +190,14 @@ Ctrl["LAlt"]:="6"
 }
 
 ;Altキーショートカット
+!q::!
+!w::"
+!e::#
+!r::$
+!t::%
+!y::'
+!u::(
+!i::)
 !o::~
 !p::[
 !sc027::] ; ;キーを]キーに
