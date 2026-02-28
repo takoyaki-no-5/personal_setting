@@ -5,10 +5,14 @@
     "terminal.integrated.defaultProfile.windows": "Command Prompt",
     "workbench.iconTheme": "material-icon-theme",
     "terminal.integrated.defaultProfile.linux": "bash",
-    "editor.accessibilitySupport": "off",
     "files.autoSave": "afterDelay",
-    /*tensorflowを使うとkerasの補完が効かなくなっていたので、こちらを使用*/
-    "python.analysis.extraPaths": [
-        "C:\\Users\\XXX\\anaconda3\\envs\\tf\\Lib\\site-packages"
-    ]
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.languageServer": "Pylance",
+    "python.analysis.languageServerMode": "default",
+    //"python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticMode": "openFilesOnly",
+    
+    "liveServer.settings.useLocalIp": true,
 }

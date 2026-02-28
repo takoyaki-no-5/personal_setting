@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include Sushida.ahk
-#Include IMEv2.ahk\IMEv2.ahk
+#Include ../IMEv2.ahk
 
 ^F9::ModeSushida
 ^F12::DllCall("LockWorkStation")
@@ -18,8 +18,6 @@ $s::{
             SendInput('{Backspace}')
             if(sInput.EndKey=='d'){
                 SendInput('{# 3}')
-
-                
             }
             else if(sInput.EndKey=='f'){
                 SendInput('{# 4}')
