@@ -6,6 +6,7 @@
 #Include Common.ahk
 
 ; Ctrl + Alt + Enter でアクティブウィンドウをボーダーレス全画面 ⇄ 元に戻す
+;FIXME 機能おかしい
 ^F7::
 {
     winID := WinExist("A")
@@ -33,8 +34,7 @@ Shift::sc073    ;shiftキーを\キーに
 \::^
 sc027::- ; ;キーを-に
 /:::
-:::/
-
+;!/::/
 
 #SuspendExempt
     RControl::WrapSuspend
@@ -222,6 +222,7 @@ Ctrl["LAlt"]:="6"
 !j::8
 !k::9
 !l::0
+
 
 ;3つ同時押しの場合のエラーハンドリング
 ;例えば、無変換+Space+qを送ろうとしたらパソコンは無変換+Space+無変換を受け取っていた

@@ -5,6 +5,7 @@ if(not A_IsAdmin){
     Sleep 1
     ExitApp
 }
+;TODO 管理者権限で実行されていない場合の処理
 
 ;環境変数(ショートカットで操作するウィンドウの名前)を読み込む
 FilePath := A_ScriptDir . "\env.txt"
