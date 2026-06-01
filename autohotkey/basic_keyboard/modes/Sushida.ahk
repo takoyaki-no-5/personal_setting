@@ -4,9 +4,9 @@ isSushiMode:=false
 ModeSushida(){
     global isSushiMode
     if(isSushiMode){
-        MsgBox("通常モードに戻ります。")
+        MsgBox("通常モードに戻ります。",,"T1")
     }else{
-        MsgBox("寿司打モードに移行します。")
+        MsgBox("寿司打モードに移行します。",,"T1")
     }
     isSushiMode:=!isSushiMode
 }

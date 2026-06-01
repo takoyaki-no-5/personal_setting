@@ -1,14 +1,10 @@
 #Requires AutoHotkey v2.0
-#Include Sushida.ahk
+#Include Function.ahk
 #Include ../IMEv2.ahk
 
-^F9::ModeSushida
-^F12::DllCall("LockWorkStation")
-
-#HotIf !isSushiMode
-
+;todo sushimodeでも反応するようにくんだから、要観察
 #HotIf WinActive("ahk_exe Obsidian.exe")
-;s d,f,gでそれぞれ### #### ##### 
+;s→ d|f|g でそれぞれ### #### ##### 
 $s::{
     SendInput('s')
     sInput:=InputHook("L1 T0.4","dfg")
@@ -41,6 +37,7 @@ $s::{
     sInput.Wait()
     Suspend
 }
+
 #HotIf
     
 ;g2回で最初の行に移動
@@ -51,30 +48,25 @@ g::{
     }
 }
 
+/*
 ;ff::vimのノーマルモード (IMEをOFFにしてESC)
 f::{
     if(A_PriorHotkey ==  ThisHotkey and A_Priorkey == "f" and A_TimeSincePriorHotkey > 60 and A_TimeSincePriorHotkey < 400){
-        if(IME_GET()==1){
-            SendInput("{Enter}")
-            Sleep(70)
-            IME_SET(0)
-        }
-        SendInput("{BackSpace}{Escape}")
+        WrapEscape(is_double_press:=true)
     }
     else{
         SendInput("f")
     }
 }
-
+*/
 
 ;ESC::vimのノーマルモード (IMEをOFFにしてESC)
-#HotIf WinActive("ahk_exe Obsidian.exe") or WinActive("ahk_exe Code.exe")
-    Esc::{
-        if(IME_GET()==1){
-            IME_SET(0)
-        }
-        SendInput("{Escape}")
-    }
-#HotIf  
 
-#HotIf
+;#HotIf WinActive("ahk_exe Obsidian.exe") or WinActive("ahk_exe Code.exe")
+;    Esc::{
+;        if(IME_GET()==1){
+;            IME_SET(0)
+;        }
+;        SendInput("{Escape}")
+;    }
+;#HotIf  
