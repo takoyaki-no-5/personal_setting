@@ -1,8 +1,8 @@
 ﻿#Requires AutoHotkey v2.0
 
-if(not A_IsAdmin){
-    Run '*RunAs "' A_ScriptFullPath '" /restart'
-    Sleep 1
+if !A_IsAdmin {
+    try
+        Run '*RunAs "' A_AhkPath '" "' A_ScriptFullPath '"'
     ExitApp
 }
 ;TODO 管理者権限で実行されていない場合の処理
